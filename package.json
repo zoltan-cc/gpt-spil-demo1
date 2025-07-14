@@ -1,0 +1,11 @@
+{
+  "name": "data-tycoon-demo",
+  "version": "1.0.0",
+  "description": "Demo version af Data Tycoon AI",
+  "main": "main.js",
+  "scripts": {
+    "start": "echo Demo kører uden build step"
+  },
+  "author": "Zoltan.cc",
+  "license": "UNLICENSED"
+}
