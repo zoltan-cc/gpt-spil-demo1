@@ -1,76 +1,96 @@
-
-const gameElement = document.getElementById('game');
-let currentRound = 1;
-const maxRounds = 5;
+const gameRoot = document.getElementById("game");
 let playerName = "";
-const agentName = "BasicOps-1";
+let currentRound = 0;
+const maxRounds = 5;
 
-const outcomes = {
-  A: {
-    result: "✅ Du modtager statsstøtte og goodwill – men under tæt overvågning.",
-    agent: "Strategisk valg. Statspenge giver dig luft, men husk overvågningen."
+const scenarios = [
+  {
+    context: "Din startup har lige fået adgang til en ny datastrøm fra sociale medier. Det kan bruges til politisk profilering.",
+    options: [
+      { label: "✅ Du modtager statsstøtte og goodwill", outcome: "Din virksomhed bliver rost offentligt." },
+      { label: "⚠️ Din nye AI går rogue", outcome: "Du mister data og tillid." },
+      { label: "💰 Du vinder stor kontrakt", outcome: "Din omsætning fordobles." },
+      { label: "🔥 Whistleblower lækker dine metoder", outcome: "Du står i shitstorm." },
+      { label: "👮‍♂️ Du tjener hurtigt", outcome: "Du får høj profit – men gråzone." }
+    ]
   },
-  B: {
-    result: "⚠️ Din nye AI går rogue – og lækker interne data.",
-    agent: "Av... næste gang bør vi teste mere før vi går i produktion."
+  {
+    context: "Et EU-direktiv truer med at forbyde din kerneforretning. Du har 48 timer til at reagere.",
+    options: [
+      { label: "📞 Du hyrer lobbyist", outcome: "Lovgivning blødes op." },
+      { label: "🔐 Du flytter data offshore", outcome: "Juridisk risiko stiger." },
+      { label: "🤝 Du indgår partnerskab", outcome: "Nyt netværk åbnes." },
+      { label: "🕵️ Du anonymiserer alt", outcome: "Kunder forsvinder." },
+      { label: "🧠 Du opgraderer AI-agent", outcome: "Effektivitet stiger kraftigt." }
+    ]
   },
-  C: {
-    result: "💰 Du vinder stor kontrakt – men bliver sat under internationalt pres.",
-    agent: "Godt træk! Men vær klar til nye krav og øjne på dig."
+  {
+    context: "Et stort medie har fundet lækkede interne dokumenter. Du ved de rammer i morgen.",
+    options: [
+      { label: "🎤 Du går i offensiv presse", outcome: "Du vender narrativet." },
+      { label: "📉 Du trækker dig fra markedet", outcome: "Du mister vækst." },
+      { label: "🤫 Du forhandler med journalister", outcome: "Skandalen dæmpes." },
+      { label: "⚖️ Du truer med søgsmål", outcome: "Det eskalerer offentligt." },
+      { label: "🪄 Du lancerer ny feature", outcome: "Historien drukner lidt." }
+    ]
   },
-  D: {
-    result: "🔥 Whistleblower lækker dine metoder – PR-krise og undersøgelse følger.",
-    agent: "Vi burde have lyttet. Nu ruller pressen og myndighederne."
+  {
+    context: "Kina tilbyder adgang til en massiv dataplatform, men kræver loyalitet.",
+    options: [
+      { label: "🇨🇳 Du siger ja", outcome: "Kæmpe vækst – men politisk reaktion." },
+      { label: "🇺🇸 Du beder USA om støtte", outcome: "Handelsaftale muligt." },
+      { label: "💼 Du starter nyt firma i Singapore", outcome: "Mere fleksibilitet – men kompleks drift." },
+      { label: "🏦 Du søger EU-funding", outcome: "Krav om compliance." },
+      { label: "🔒 Du afviser tilbud", outcome: "Du bevarer integritet – men taber momentum." }
+    ]
   },
-  E: {
-    result: "🕵️ Du tjener hurtigt – men bliver blacklistet af NGO’er og medier.",
-    agent: "Sort profit er farlig, men du tog chancen."
+  {
+    context: "En tidligere medarbejder forsøger at kopiere din forretningsmodel i Dubai.",
+    options: [
+      { label: "🔎 Du lancerer undersøgelse", outcome: "Beviser kopiering." },
+      { label: "📢 Du opbygger brand", outcome: "Du styrker din egen fortælling." },
+      { label: "🎯 Du fokuserer på ny teknologi", outcome: "Konkurrenten sakker bagud." },
+      { label: "🛡️ Du udgiver open source", outcome: "Du fremstår generøs – men mister forspring." },
+      { label: "🧑‍⚖️ Du sagsøger konkurrenten", outcome: "Langvarig sag – men mulig sejr." }
+    ]
   }
-};
+];
 
 function startGame() {
-  playerName = document.getElementById('playerName').value || "Spiller";
-  gameElement.innerHTML = `<p>🧠 AI-agent tilkoblet: <strong>${agentName}</strong></p>`;
+  playerName = document.getElementById("playerName").value || "Spiller";
+  currentRound = 0;
+  gameRoot.innerHTML = "";
   nextRound();
 }
 
 function nextRound() {
-  if (currentRound > maxRounds) {
-    endGame();
+  if (currentRound >= maxRounds) {
+    showEndScreen();
     return;
   }
-
-  const question = document.createElement('div');
-  question.innerHTML = `<h2>Runde ${currentRound} – ${playerName}</h2><p>Hvilken strategi vælger du?</p>`;
-
-  ['A', 'B', 'C', 'D', 'E'].forEach(option => {
-    const button = document.createElement('button');
-    button.textContent = `${option}: ${outcomes[option].result.split('–')[0]}`;
-    button.onclick = () => handleChoice(option);
-    question.appendChild(button);
-    question.appendChild(document.createElement('br'));
+  const round = scenarios[currentRound];
+  const div = document.createElement("div");
+  div.innerHTML = `<h2>Runde ${currentRound + 1} – ${playerName}</h2>
+    <div class="context"><strong>Situation:</strong> ${round.context}</div>
+    <p>Hvilken strategi vælger du?</p>`;
+  round.options.forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.textContent = `${String.fromCharCode(65 + i)}: ${opt.label}`;
+    btn.className = "option";
+    btn.onclick = () => {
+      div.innerHTML += `<p><em>Agent BasicOps-1:</em> ${opt.outcome}</p>`;
+      currentRound++;
+      setTimeout(() => {
+        gameRoot.innerHTML = "";
+        nextRound();
+      }, 2000);
+    };
+    div.appendChild(btn);
   });
-
-  gameElement.innerHTML = "";
-  gameElement.appendChild(question);
+  gameRoot.appendChild(div);
 }
 
-function handleChoice(option) {
-  const result = document.createElement('div');
-  result.innerHTML = `
-    <p>${outcomes[option].result}</p>
-    <p>💬 ${agentName}: "${outcomes[option].agent}"</p>
-  `;
-  gameElement.appendChild(result);
-  currentRound++;
-  setTimeout(nextRound, 3000);
-}
-
-function endGame() {
-  gameElement.innerHTML = `
-    <h2>Spillet er slut, ${playerName}!</h2>
-    <p>Tak fordi du spillede demoen af Data Tycoon.</p>
-    <p>🧠 Din AI-agent: <strong>${agentName}</strong></p>
-    <a href="https://zoltan.cc" target="_blank">🔓 Besøg zoltan.cc for fuld adgang</a>
-  `;
+function showEndScreen() {
+  gameRoot.innerHTML = `<h2>🎉 Tak for at spille, ${playerName}!</h2>
+  <p>Demoen er slut. Besøg <a href="https://zoltan.cc" target="_blank">zoltan.cc</a> for fuld version.</p>`;
 }
