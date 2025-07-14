@@ -1,2 +1,2 @@
-# GPT Spil Demo
-Dette er en simpel HTML+JS-version af et AI-spil, klar til GitHub + Vercel.
+# GPT Spil Demo (Rettet)
+Denne version viser en simpel besked korrekt i browseren uden fejl.
