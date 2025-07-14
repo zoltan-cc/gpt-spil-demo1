@@ -92,5 +92,5 @@ function nextRound() {
 
 function showEndScreen() {
   gameRoot.innerHTML = `<h2>🎉 Tak for at spille, ${playerName}!</h2>
-  <p>Demoen er slut. Besøg <a href="https://zoltan.cc" target="_blank">zoltan.cc</a> for fuld version.</p>`;
+  <p>Demoen er slut. Besøg <a href="https://datatycoongame.com" target="_blank">Buy now</a> for fuld version.</p>`;
 }
